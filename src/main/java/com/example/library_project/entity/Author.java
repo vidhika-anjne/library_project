@@ -22,7 +22,7 @@ public class Author {
     private List<Book> books;
 
     // no-args constructor
-    public Author() {
+    public Author(String authorName) {
     }
     // getters and setters
     public Long getId() {

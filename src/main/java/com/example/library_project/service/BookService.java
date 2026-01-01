@@ -1,8 +1,10 @@
 package com.example.library_project.service;
 
 import com.example.library_project.dto.BookResponseDTO;
+import com.example.library_project.dto.CreateBookRequest;
 import com.example.library_project.entity.Author;
 import com.example.library_project.entity.Book;
+import com.example.library_project.exception.ConflictException;
 import com.example.library_project.repository.AuthorRepository;
 import com.example.library_project.repository.BookRepository;
 import org.springframework.stereotype.Service;
@@ -19,16 +21,46 @@ public class BookService {
         this.authorRepository = authorRepository;
     }
 
-    public Book addBook(Book book) {
-        Author incomingAuthor = book.getAuthor();
+//    public Book addBook(CreateBookRequest request) {
+//        Author incomingAuthor = book.getAuthor();
+//
+//        Author author = authorRepository
+//                .findByName(incomingAuthor.getName())
+//                .orElseGet(() -> authorRepository.save(incomingAuthor));
+//
+//        book.setAuthor(author);
+//        return bookRepository.save(book);
+//    }
+    public BookResponseDTO addBook(CreateBookRequest request) {
+
+        if (bookRepository.existsByIsbn(request.getIsbn())) {
+            throw new ConflictException("Book with this ISBN already exists");
+        }
 
         Author author = authorRepository
-                .findByName(incomingAuthor.getName())
-                .orElseGet(() -> authorRepository.save(incomingAuthor));
+                .findByName(request.getAuthorName())
+                .orElseGet(() -> authorRepository.save(
+                        new Author(request.getAuthorName())
+                ));
 
+        Book book = new Book();
+        book.setTitle(request.getTitle());
+        book.setIsbn(request.getIsbn());
+        book.setTotalCopies(request.getTotalCopies());
+        book.setAvailableCopies(request.getTotalCopies());
         book.setAuthor(author);
-        return bookRepository.save(book);
+
+        Book saved = bookRepository.save(book);
+
+        return new BookResponseDTO(
+                saved.getId(),
+                saved.getTitle(),
+                saved.getIsbn(),
+                saved.getAvailableCopies(),
+                author.getName()
+        );
     }
+
 
     public List<Book> getAllBooks() {
         return bookRepository.findAll();
