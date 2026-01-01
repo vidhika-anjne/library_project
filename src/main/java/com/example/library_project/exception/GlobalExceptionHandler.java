@@ -1,5 +1,6 @@
 package com.example.library_project.exception;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 //import org.springframework.web.ErrorResponse;
@@ -58,6 +59,19 @@ public class GlobalExceptionHandler {
         response.put("errors", errors);
 
         return ResponseEntity.badRequest().body(response);
+    }
+    // if 2 books of same isbn is handled at the same time
+    // so we throw 409 error instead of usual 500 so that we know that this happened
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorResponse> handleDataIntegrityViolation(
+            DataIntegrityViolationException ex) {
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(new ErrorResponse(
+                        "Duplicate or invalid data violates database constraints",
+                        HttpStatus.CONFLICT.value()
+                ));
     }
 
 }

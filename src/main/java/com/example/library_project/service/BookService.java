@@ -7,6 +7,8 @@ import com.example.library_project.entity.Book;
 import com.example.library_project.exception.ConflictException;
 import com.example.library_project.repository.AuthorRepository;
 import com.example.library_project.repository.BookRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -78,5 +80,27 @@ public class BookService {
 
                 ))
                 .toList();
+    }
+
+    public Page<BookResponseDTO> searchBooks(
+            String query,
+            Pageable pageable
+    ) {
+
+        Page<Book> page;
+
+        if (query == null || query.isBlank()) {
+            page = bookRepository.findAll(pageable);
+        } else {
+            page = bookRepository.findByTitleContainingIgnoreCase(query, pageable);
+        }
+
+        return page.map(book -> new BookResponseDTO(
+                book.getId(),
+                book.getTitle(),
+                book.getIsbn(),
+                book.getAvailableCopies(),
+                book.getAuthor() != null ? book.getAuthor().getName() : null
+        ));
     }
 }
