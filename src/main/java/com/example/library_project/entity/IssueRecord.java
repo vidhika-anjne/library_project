@@ -21,6 +21,10 @@ public class IssueRecord {
     @Enumerated(EnumType.STRING)
     private IssueStatus status;
 
+    @ManyToOne
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member;
+
     public IssueRecord() {}
 
     public Long getId() {
@@ -57,6 +61,14 @@ public class IssueRecord {
 
     public void setStatus(IssueStatus status) {
         this.status = status;
+    }
+
+    public Member getMember() {
+        return member;
+    }
+
+    public void setMember(Member member) {
+        this.member = member;
     }
 }
 

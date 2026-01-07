@@ -21,14 +21,22 @@ public class IssueController {
         return issueService.getAllIssues();
     }
 
-    @PostMapping("/{bookId}")
-    public IssueRecord issueBook(@PathVariable Long bookId) {
-        return issueService.issueBook(bookId);
-    }
+//    @PostMapping("/{bookId}")
+//    public IssueRecord issueBook(@PathVariable Long bookId) {
+//        return issueService.issueBook(bookId);
+//    }
 
     @PutMapping("/return/{issueRecordId}")
     public IssueRecord returnBook(@PathVariable Long issueRecordId) {
         return issueService.returnBook(issueRecordId);
+    }
+
+    @PostMapping("/{bookId}/member/{memberId}")
+    public IssueRecord issueBook(
+            @PathVariable Long bookId,
+            @PathVariable Long memberId
+    ) {
+        return issueService.issueBook(bookId, memberId);
     }
 
 }
