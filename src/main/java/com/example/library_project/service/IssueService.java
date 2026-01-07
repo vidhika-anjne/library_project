@@ -75,17 +75,20 @@ public class IssueService {
     }
 
     @Transactional
-    public IssueRecord returnBook(Long issueRecordId) {
+    public IssueRecord returnBook(Long issueId, Long memberId) {
 
-        IssueRecord record = issueRecordRepository.findById(issueRecordId)
-                .orElseThrow(() -> new RuntimeException("Issue record not found"));
+        IssueRecord record = issueRecordRepository.findById(issueId)
+                .orElseThrow(() -> new ResourceNotFoundException("Issue record not found"));
+
+        if (!record.getMember().getId().equals(memberId)) {
+            throw new BadRequestException("This issue does not belong to the member");
+        }
 
         if (record.getStatus() == IssueStatus.RETURNED) {
             throw new BadRequestException("Book already returned");
         }
 
         Book book = record.getBook();
-
         book.setAvailableCopies(book.getAvailableCopies() + 1);
 
         record.setStatus(IssueStatus.RETURNED);
@@ -94,5 +97,6 @@ public class IssueService {
         bookRepository.save(book);
         return issueRecordRepository.save(record);
     }
+
 
 }

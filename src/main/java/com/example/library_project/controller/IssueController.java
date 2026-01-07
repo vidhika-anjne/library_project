@@ -26,9 +26,9 @@ public class IssueController {
 //        return issueService.issueBook(bookId);
 //    }
 
-    @PutMapping("/return/{issueRecordId}")
-    public IssueRecord returnBook(@PathVariable Long issueRecordId) {
-        return issueService.returnBook(issueRecordId);
+    @PutMapping("/{issueId}/member/{memberId}/return")
+    public IssueRecord returnBook(@PathVariable Long issueId, @PathVariable Long memberId) {
+        return issueService.returnBook(issueId, memberId);
     }
 
     @PostMapping("/{bookId}/member/{memberId}")

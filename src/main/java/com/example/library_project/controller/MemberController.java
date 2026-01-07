@@ -1,6 +1,7 @@
 package com.example.library_project.controller;
 
 import com.example.library_project.dto.CreateMemberRequest;
+import com.example.library_project.dto.IssueHistoryResponseDTO;
 import com.example.library_project.dto.MemberResponseDTO;
 import com.example.library_project.service.MemberService;
 import jakarta.validation.Valid;
@@ -28,4 +29,12 @@ public class MemberController {
     public List<MemberResponseDTO> getMembers(){
         return memberService.getAllMembersDTO();
     }
+
+    @GetMapping("/{memberId}/issues")
+    public List<IssueHistoryResponseDTO> getMemberIssueHistory(
+            @PathVariable Long memberId
+    ) {
+        return memberService.getMemberIssueHistory(memberId);
+    }
+
 }

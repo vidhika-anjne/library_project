@@ -7,6 +7,8 @@ import com.example.library_project.entity.IssueStatus;
 import com.example.library_project.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 public interface IssueRecordRepository extends JpaRepository<IssueRecord, Long> {
     long countByMemberAndStatus(Member member, IssueStatus status);
 
@@ -15,6 +17,6 @@ public interface IssueRecordRepository extends JpaRepository<IssueRecord, Long> 
             Member member,
             IssueStatus status
     );
-
+    List<IssueRecord> findByMember(Member member);
 }
 
